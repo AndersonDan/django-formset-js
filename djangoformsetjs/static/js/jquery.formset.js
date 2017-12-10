@@ -84,7 +84,7 @@
 
         var prefix = this.formsetPrefix + '-' + newIndex;
         $newForm.find('[name=' + prefix + '-ORDER]').val(newIndex);
-        
+
         return $newForm;
     };
 
@@ -124,7 +124,7 @@
                 });
                 $form.trigger('formAdded');
             }
-        }
+        };
 
         // Trigger `formAdded` / `formDeleted` events when delete checkbox value changes
         $delete.change(onChangeDelete);
@@ -145,7 +145,7 @@
         $order.change(function(event) {
             _this.reorderForms();
         });
-        
+
         var $moveUpButton = $form.find(this.opts.moveUpButton);
 
         $moveUpButton.bind('click', function() {
@@ -207,7 +207,7 @@
             var $order = $(form).find('[name=' + prefix + '-ORDER]');
             $order.val(i);
         });
-    }
+    };
 
     /**
      * Enumerate the forms and fill numbers into their ORDER input
@@ -223,7 +223,7 @@
             var a = parseInt($(form_a).find('[name*=-ORDER]').val());
             var b = parseInt($(form_b).find('[name*=-ORDER]').val());
             return (a < b ? -1 : (a > b ? 1 : 0));
-        }
+        };
         var $forms = this.$activeForms().sort(compareForms);
 
         if (this.opts.reorderMode == 'dom') {
@@ -254,7 +254,7 @@
                 accumulatedHeight += $(form).outerHeight(true);
             });
             this.$body.css("height", accumulatedHeight + "px");
-            
+
             // Reset the CSS
             window.setTimeout(function() {
                 $forms.reverse().each(function(i, form) {
@@ -266,7 +266,7 @@
                 _this.$body.css("height", "auto");
             }, 1000);
         }
-    }
+    };
 
     Formset.prototype.$forms = function() {
         return this.$body.find(this.opts.form);
@@ -297,7 +297,8 @@
         return this.activeFormCount() >= maxForms;
     };
 
-    Formset.prototype.checkMaxForms = function() {
+    Formset.prototype.checkMaxForms = function(e) {
+        e.preventDefault();
         if (this.hasMaxForms()) {
             this.$formset.addClass(this.opts.hasMaxFormsClass);
             this.$add.attr('disabled', 'disabled');
@@ -305,7 +306,7 @@
             this.$formset.removeClass(this.opts.hasMaxFormsClass);
             this.$add.removeAttr('disabled');
         }
-        return false;
+        return true;
     };
 
     Formset.prototype.animateForms = function() {
@@ -313,11 +314,11 @@
             var $form = $(this);
             $form.slideUp(0);
             $form.slideDown();
-            return false;
+            return true;
         }).on('formDeleted', this.opts.form, function() {
             var $form = $(this);
             $form.slideUp();
-            return false;
+            return true;
         });
         this.$forms().filter('[data-formset-form-deleted]').slideUp(0);
     };
@@ -353,7 +354,7 @@
             throw new Error("Unknown function call " + fn + " for $.fn.formset");
         }
     };
-    
+
     // Enable the array function 'reverse' for collections of jQuery
     // elements by including the shortest jQuery plugin ever.
     $.fn.reverse = [].reverse;
